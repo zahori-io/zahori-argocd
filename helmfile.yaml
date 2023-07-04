@@ -1,57 +1,56 @@
 repositories:
-- name: zahori
-  url: https://zahori-io.github.io/zahori-helm-charts
+  - name: zahori
+    url: https://zahori-io.github.io/zahori-helm-charts
 
 releases:
-- name: moon
-  namespace: moon
-  chart: zahori/zahori-moon
-  version: 1.16.0
-  values:
-  - values/moon.yaml
+  - name: consul
+    namespace: zahori
+    chart: zahori/zahori-consul
+    version: 1.0.0
+    values:
+      - values/consul.yaml
+  - name: moon
+    namespace: moon
+    chart: zahori/zahori-moon
+    version: 1.0.0
+    needs:
+      - zahori/consul
+    values:
+      - values/moon.yaml
+  - name: postgresql
+    namespace: zahori
+    chart: zahori/zahori-postgresql
+    version: 1.0.0
+    values:
+      - values/postgresql.yaml
 
-- name: consul
-  namespace: zahori
-  chart: zahori/zahori-consul
-  version: 1.1.2
-  values:
-  - values/consul.yaml
+  - name: server
+    namespace: zahori
+    chart: zahori/zahori-server
+    version: 1.0.0
+    needs:
+      - zahori/postgresql
+      - zahori/consul
+      - moon/moon
+    values:
+      - values/server.yaml
 
-- name: postgresql
-  namespace: zahori
-  chart: zahori-postgresql
-  version: 1.0.0
-  values:
-  - values/postgresql.yaml
+  - name: scheduler
+    namespace: zahori
+    chart: zahori/zahori-scheduler
+    version: 1.0.0
+    needs:
+      - zahori/consul
+      - zahori/server
+    values:
+      - values/scheduler.yaml
 
-- name: server
-  namespace: zahori
-  chart: zahori-server
-  version: 1.0.0
-  needs:
-    - zahori/postgresql
-    - zahori/consul
-    - moon/moon
-  values:
-  - values/server.yaml
-
-- name: scheduler
-  namespace: zahori
-  chart: zahori-scheduler
-  version: 1.0.0
-  needs:
-    - zahori/consul
-    - zahori/server
-  values:
-  - values/scheduler.yaml
-
-- name: wikipedia-process
-  namespace: zahori
-  chart: zahori-process
-  version: 1.0.0
-  needs:
-    - zahori/consul
-    - zahori/server
-  values:
-  - values/process.yaml
-  
+  - name: wikipedia-process
+    namespace: zahori
+    chart: zahori/zahori-process
+    version: 1.0.0
+    needs:
+      - zahori/consul
+      - zahori/server
+    values:
+      - values/process.yaml
