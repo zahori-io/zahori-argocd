@@ -40,7 +40,9 @@ releases:
     chart: zahori/zahori-scheduler
     version: 1.0.0
     needs:
+      - zahori/postgresql
       - zahori/consul
+      - moon/moon
       - zahori/server
     values:
       - values/scheduler.yaml
@@ -50,7 +52,9 @@ releases:
     chart: zahori/zahori-process
     version: 1.0.0
     needs:
+      - zahori/postgresql
       - zahori/consul
+      - moon/moon
       - zahori/server
     values:
       - values/process.yaml
